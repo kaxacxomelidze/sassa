@@ -2,29 +2,41 @@ document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('messageForm');
   if (!form) return;
 
-  const refresh = async () => {
-    const res = await fetch(`../messages/poll/${window.conversationId}`);
-    if (!res.ok) return;
-    const data = await res.json();
-    const box = document.getElementById('chatBox');
-    box.innerHTML = data.map(m => `
+  const pollUrl = form.dataset.pollUrl;
+  const sendUrl = form.dataset.sendUrl;
+  const box = document.getElementById('chatBox');
+
+  const escapeHtml = (str) => String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+
+  const render = (messages) => {
+    box.innerHTML = messages.map((m) => `
       <div class="msg ${m.sender_type === 'agent' ? 'outgoing' : 'incoming'}">
-        <div><small class="text-muted">${m.sender_type} ${m.agent_name ?? ''} • ${m.created_at}</small></div>
-        <div>${m.body.replace(/</g, '&lt;')}</div>
+        <div><small class="text-muted text-capitalize">${escapeHtml(m.sender_type)} ${escapeHtml(m.agent_name ?? '')} · ${escapeHtml(m.created_at)}</small></div>
+        <div>${escapeHtml(m.body)}</div>
       </div>`).join('');
     box.scrollTop = box.scrollHeight;
+  };
+
+  const refresh = async () => {
+    const res = await fetch(pollUrl, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+    if (res.ok) render(await res.json());
   };
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const formData = new FormData(form);
-    const res = await fetch('../messages/ajax', { method: 'POST', body: formData });
+    const res = await fetch(sendUrl, { method: 'POST', body: formData });
+    if (!res.ok) return;
     const json = await res.json();
     if (json.ok) {
-      form.reset();
+      form.querySelector('input[name="body"]').value = '';
       refresh();
     }
   });
 
+  refresh();
   setInterval(refresh, 4000);
 });

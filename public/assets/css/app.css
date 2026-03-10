@@ -1,7 +1,24 @@
-body { background: #f5f7fb; }
-.sidebar { width: 230px; min-height: 100vh; }
-.stat-card { border-left: 4px solid #0d6efd; }
-.chat-box { min-height: 420px; max-height: 420px; overflow-y: auto; background: #fff; }
-.msg { margin-bottom: 10px; padding: 10px; border-radius: 8px; max-width: 80%; }
-.msg.incoming { background: #eef2ff; }
-.msg.outgoing { margin-left: auto; background: #d1e7dd; }
+:root{
+  --bg:#f4f7fb;
+  --card:#ffffff;
+  --text:#0f172a;
+}
+body{background:var(--bg);color:var(--text);font-size:.95rem}
+.app-shell{min-height:100vh}
+.sidebar{width:250px;min-height:100vh;display:flex;flex-direction:column;position:sticky;top:0}
+.brand-mark{width:34px;height:34px;border-radius:10px;background:rgba(255,255,255,.15);display:inline-flex;align-items:center;justify-content:center}
+.nav-sassa .nav-link{color:#dbe5ff;border-radius:.6rem}
+.nav-sassa .nav-link:hover,.nav-sassa .nav-link.active{background:rgba(255,255,255,.15);color:#fff}
+.content-wrap{min-width:0}
+.topbar{position:sticky;top:0;z-index:10}
+.card{border-radius:12px}
+.stat-card{border:0;box-shadow:0 6px 20px rgba(15,23,42,.05)}
+.chat-box{min-height:480px;max-height:480px;overflow-y:auto;background:#fafcff}
+.msg{margin-bottom:12px;padding:10px 12px;border-radius:10px;max-width:82%;box-shadow:0 2px 8px rgba(15,23,42,.06)}
+.msg.incoming{background:#edf2ff}
+.msg.outgoing{margin-left:auto;background:#d8f3dc}
+.login-panel{background:linear-gradient(140deg,#0d6efd,#2f80ff)}
+@media (max-width:991px){
+ .sidebar{width:86px}.sidebar .brand div,.sidebar .nav-link{font-size:0}
+ .sidebar .nav-link i{font-size:1rem;margin-right:0!important}
+}
