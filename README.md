@@ -91,3 +91,50 @@ Do this:
 4. Open `http://localhost/newsaas/`
 
 This project now also auto-detects base path from the running script, so it works even when folder name changes.
+
+
+## Invalid credentials on fresh install
+If login shows **Invalid credentials** right after setup, your `users` rows likely came from an older seed hash.
+
+Run this SQL in phpMyAdmin to reset demo users to `password123`:
+
+```sql
+UPDATE users
+SET password_hash = '$2y$12$ZDT05TrZgvY1UvGaqCkh3O/DTLX5vBRO6222N9wl9.3Ki6HzOCabi'
+WHERE email IN ('admin@sassa.local','lead@sassa.local','agent@sassa.local');
+```
+
+Then login with:
+- `admin@sassa.local` / `password123`
+
+You can also drop database and re-import `database/schema.sql` then updated `database/seed.sql`.
+
+
+## API Integrations system
+A full **Integrations** module is available in admin panel:
+- Open: `/integrations`
+- Create integration profiles for: WhatsApp, Messenger, Instagram, Telegram, Email, Website Chat
+- Save API base URL, API key, secret, access token, webhook verify token, webhook URL, and extra JSON config
+- Link an integration to an inbox
+
+### If your DB was created before this feature
+Run this SQL once:
+```sql
+CREATE TABLE channel_integrations (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  channel_type VARCHAR(50) NOT NULL,
+  name VARCHAR(120) NOT NULL,
+  inbox_id INT NULL,
+  api_base_url VARCHAR(255) NULL,
+  api_key VARCHAR(255) NULL,
+  api_secret VARCHAR(255) NULL,
+  access_token TEXT NULL,
+  webhook_verify_token VARCHAR(255) NULL,
+  webhook_url VARCHAR(255) NULL,
+  config_json JSON NULL,
+  is_active TINYINT(1) DEFAULT 1,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (inbox_id) REFERENCES inboxes(id)
+);
+```

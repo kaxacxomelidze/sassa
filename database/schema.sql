@@ -138,3 +138,22 @@ CREATE TABLE webhooks_log (
   status VARCHAR(30) DEFAULT 'received',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+
+CREATE TABLE channel_integrations (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  channel_type VARCHAR(50) NOT NULL,
+  name VARCHAR(120) NOT NULL,
+  inbox_id INT NULL,
+  api_base_url VARCHAR(255) NULL,
+  api_key VARCHAR(255) NULL,
+  api_secret VARCHAR(255) NULL,
+  access_token TEXT NULL,
+  webhook_verify_token VARCHAR(255) NULL,
+  webhook_url VARCHAR(255) NULL,
+  config_json JSON NULL,
+  is_active TINYINT(1) DEFAULT 1,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (inbox_id) REFERENCES inboxes(id)
+);
