@@ -11,9 +11,17 @@ class Router
     public function dispatch(string $method, string $uri): void
     {
         $uri = trim(parse_url($uri, PHP_URL_PATH), '/');
-        $base = trim(parse_url(App::$config['app']['url'], PHP_URL_PATH) ?? '', '/');
-        if ($base && str_starts_with($uri, $base)) {
-            $uri = trim(substr($uri, strlen($base)), '/');
+
+        $baseCandidates = array_filter([
+            trim(parse_url(App::$config['app']['url'] ?? '', PHP_URL_PATH) ?? '', '/'),
+            App::basePath(),
+        ]);
+
+        foreach ($baseCandidates as $base) {
+            if ($base && ($uri === $base || str_starts_with($uri, $base . '/'))) {
+                $uri = trim(substr($uri, strlen($base)), '/');
+                break;
+            }
         }
 
         foreach ($this->routes as [$routeMethod, $routePath, $handler]) {

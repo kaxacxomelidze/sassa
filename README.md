@@ -78,3 +78,16 @@ The root route will auto-redirect:
 - `/webhooks/email-parser`
 
 These currently log payloads into `webhooks_log`. Later, add signature verification + normalization + provider-specific handlers in `WebhookController`.
+
+
+## Fix for "Page not found"
+If you renamed project folder (example `newsaas`) but config URL still points to another path (example `/sassa`), routes can mismatch.
+
+Do this:
+1. Open `config/config.php`
+2. Set:
+   - `'app' => ['url' => 'http://localhost/newsaas', ...]`
+3. Restart Apache
+4. Open `http://localhost/newsaas/`
+
+This project now also auto-detects base path from the running script, so it works even when folder name changes.

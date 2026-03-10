@@ -38,8 +38,31 @@ class App
         exit;
     }
 
+    public static function basePath(): string
+    {
+        $configured = trim(parse_url(self::$config['app']['url'] ?? '', PHP_URL_PATH) ?? '', '/');
+        $requestPath = trim(parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?? '', '/');
+
+        if ($configured !== '' && ($requestPath === $configured || str_starts_with($requestPath, $configured . '/'))) {
+            return $configured;
+        }
+
+        $scriptDir = trim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '')), '/');
+        if ($scriptDir === '.' || $scriptDir === '') {
+            return '';
+        }
+
+        if (str_ends_with($scriptDir, '/public')) {
+            $scriptDir = trim(substr($scriptDir, 0, -7), '/');
+        }
+
+        return $scriptDir;
+    }
+
     public static function url(string $path = ''): string
     {
-        return rtrim(self::$config['app']['url'], '/') . '/' . ltrim($path, '/');
+        $base = self::basePath();
+        $relative = ltrim($path, '/');
+        return '/' . ($base ? $base . '/' : '') . $relative;
     }
 }
