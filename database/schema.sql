@@ -153,6 +153,9 @@ CREATE TABLE channel_integrations (
   webhook_url VARCHAR(255) NULL,
   config_json JSON NULL,
   is_active TINYINT(1) DEFAULT 1,
+  last_test_status VARCHAR(20) NULL,
+  last_test_message VARCHAR(255) NULL,
+  last_test_at TIMESTAMP NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (inbox_id) REFERENCES inboxes(id)

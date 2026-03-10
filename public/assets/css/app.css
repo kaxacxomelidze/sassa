@@ -22,3 +22,6 @@ body{background:var(--bg);color:var(--text);font-size:.95rem}
  .sidebar{width:86px}.sidebar .brand div,.sidebar .nav-link{font-size:0}
  .sidebar .nav-link i{font-size:1rem;margin-right:0!important}
 }
+
+.integration-table code{font-size:.78rem;background:#f1f5f9;padding:.15rem .35rem;border-radius:.35rem}
+.integration-table td{vertical-align:top}

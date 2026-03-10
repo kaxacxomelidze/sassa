@@ -38,3 +38,14 @@ function flash(string $key, ?string $value = null): ?string
     unset($_SESSION['_flash'][$key]);
     return $msg;
 }
+
+
+function mask_secret(?string $value): string
+{
+    $value = (string) $value;
+    $len = strlen($value);
+    if ($len <= 4) {
+        return $len ? str_repeat('*', $len) : '-';
+    }
+    return substr($value, 0, 2) . str_repeat('*', max(2, $len - 4)) . substr($value, -2);
+}

@@ -1,4 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
+  initConversationChat();
+  initIntegrationFormEnhancements();
+});
+
+function initConversationChat() {
   const form = document.getElementById('messageForm');
   if (!form) return;
 
@@ -39,4 +44,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
   refresh();
   setInterval(refresh, 4000);
-});
+}
+
+function initIntegrationFormEnhancements() {
+  const presets = {
+    whatsapp: { apiBase: 'https://graph.facebook.com', webhookSuffix: '/webhooks/whatsapp', hint: 'Use Meta App ID/Secret + WhatsApp access token.' },
+    messenger: { apiBase: 'https://graph.facebook.com', webhookSuffix: '/webhooks/messenger', hint: 'Use Meta Page Access Token + App ID/Secret.' },
+    instagram: { apiBase: 'https://graph.facebook.com', webhookSuffix: '/webhooks/instagram', hint: 'Use Instagram Graph API token.' },
+    telegram: { apiBase: 'https://api.telegram.org', webhookSuffix: '/webhooks/telegram', hint: 'Use BotFather token as Access Token.' },
+    email: { apiBase: 'https://api.mailgun.net', webhookSuffix: '/webhooks/email-parser', hint: 'Use inbound email parser credentials.' },
+    website_chat: { apiBase: window.location.origin, webhookSuffix: '/widget/start', hint: 'Website chat works locally without external API.' },
+  };
+
+  const forms = document.querySelectorAll('.integration-form');
+  forms.forEach((form) => {
+    const channel = form.querySelector('.integration-channel');
+    const apiBase = form.querySelector('.integration-api-base');
+    const webhookUrl = form.querySelector('.integration-webhook-url');
+    const hint = form.querySelector('.integration-hint');
+    if (!channel || !apiBase || !webhookUrl) return;
+
+    const applyPreset = () => {
+      const preset = presets[channel.value] || presets.whatsapp;
+      if (!apiBase.value) apiBase.value = preset.apiBase;
+      if (!webhookUrl.value) webhookUrl.value = `${window.location.origin}${preset.webhookSuffix}`;
+      if (hint) hint.textContent = preset.hint;
+    };
+
+    channel.addEventListener('change', applyPreset);
+    applyPreset();
+  });
+}

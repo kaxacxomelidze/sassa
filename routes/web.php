@@ -28,6 +28,7 @@ $router->add('POST', 'inboxes', [$inboxes, 'store']);
 $router->add('GET', 'integrations', [$integrations, 'index']);
 $router->add('POST', 'integrations', [$integrations, 'store']);
 $router->add('POST', 'integrations/{id}/update', [$integrations, 'update']);
+$router->add('POST', 'integrations/{id}/test', [$integrations, 'test']);
 $router->add('POST', 'integrations/{id}/delete', [$integrations, 'delete']);
 $router->add('GET', 'conversations', [$conversations, 'index']);
 $router->add('GET', 'conversations/{id}', [$conversations, 'show']);

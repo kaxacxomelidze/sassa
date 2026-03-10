@@ -133,8 +133,54 @@ CREATE TABLE channel_integrations (
   webhook_url VARCHAR(255) NULL,
   config_json JSON NULL,
   is_active TINYINT(1) DEFAULT 1,
+  last_test_status VARCHAR(20) NULL,
+  last_test_message VARCHAR(255) NULL,
+  last_test_at TIMESTAMP NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (inbox_id) REFERENCES inboxes(id)
 );
 ```
+
+If table already exists from old version, run:
+```sql
+ALTER TABLE channel_integrations
+  ADD COLUMN last_test_status VARCHAR(20) NULL,
+  ADD COLUMN last_test_message VARCHAR(255) NULL,
+  ADD COLUMN last_test_at TIMESTAMP NULL;
+```
+
+
+### Where to get API credentials
+Use this mapping when filling `/integrations`:
+
+- **WhatsApp Cloud API (Meta Developers)**
+  - API Key/App ID: Meta App ID
+  - API Secret: Meta App Secret
+  - Access Token: WhatsApp token
+  - Webhook URL: `https://your-domain.com/webhooks/whatsapp`
+  - Config JSON example: `{"phone_number_id":"123456"}`
+
+- **Facebook Messenger (Meta Developers)**
+  - API Key/App ID: Meta App ID
+  - API Secret: Meta App Secret
+  - Access Token: Page Access Token
+  - Webhook URL: `https://your-domain.com/webhooks/messenger`
+  - Config JSON example: `{"page_id":"987654"}`
+
+- **Instagram Messaging (Meta Developers)**
+  - API Key/App ID: Meta App ID
+  - API Secret: Meta App Secret
+  - Access Token: Instagram Graph token
+  - Webhook URL: `https://your-domain.com/webhooks/instagram`
+
+- **Telegram (BotFather)**
+  - Access Token: bot token from BotFather
+  - API Base URL: `https://api.telegram.org`
+  - Webhook URL: `https://your-domain.com/webhooks/telegram`
+
+- **Email provider (Mailgun/SendGrid/Postmark)**
+  - API Key / Access Token from provider dashboard
+  - Webhook URL: `https://your-domain.com/webhooks/email-parser`
+
+> Note: provider webhooks require a public HTTPS URL (use ngrok/cloudflare tunnel for local testing).
