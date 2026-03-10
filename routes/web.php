@@ -8,7 +8,12 @@ $messages = new MessagesController();
 $widget = new WidgetController();
 $webhook = new WebhookController();
 
-$router->add('GET', '', fn() => App::redirect('dashboard'));
+$router->add('GET', '', function () {
+    if (!empty($_SESSION['user'])) {
+        App::redirect('dashboard');
+    }
+    App::redirect('login');
+});
 $router->add('GET', 'login', [$auth, 'showLogin']);
 $router->add('POST', 'login', [$auth, 'login']);
 $router->add('GET', 'logout', [$auth, 'logout']);
