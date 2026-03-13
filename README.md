@@ -228,3 +228,13 @@ The verify token is matched against Integration `webhook_verify_token`.
 ## Security note for integration secrets
 `api_secret` and `access_token` are encrypted at rest before storing in database.
 If you change `app.key`, previously stored secrets cannot be decrypted, so rotate/re-save credentials after key change.
+
+
+## Facebook/Messenger app review URLs
+Use these public URLs in Meta App Dashboard:
+- Privacy Policy URL: `https://your-domain.com/privacy-policy`
+- Terms of Service URL: `https://your-domain.com/terms-of-service`
+
+For local testing only:
+- `http://localhost/sassa/privacy-policy`
+- `http://localhost/sassa/terms-of-service`

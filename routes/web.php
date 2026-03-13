@@ -19,6 +19,8 @@ $router->add('GET', '', function () {
     App::redirect('login');
 });
 $router->add('GET', 'login', [$auth, 'showLogin']);
+$router->add('GET', 'privacy-policy', fn() => App::view('legal/privacy'));
+$router->add('GET', 'terms-of-service', fn() => App::view('legal/terms'));
 $router->add('POST', 'login', [$auth, 'login']);
 $router->add('GET', 'logout', [$auth, 'logout']);
 
