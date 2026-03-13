@@ -4,6 +4,8 @@ $dashboard = new DashboardController();
 $contacts = new ContactsController();
 $inboxes = new InboxesController();
 $integrations = new IntegrationsController();
+$users = new UsersController();
+$settings = new SettingsController();
 $conversations = new ConversationsController();
 $messages = new MessagesController();
 $widget = new WidgetController();
@@ -24,6 +26,12 @@ $router->add('GET', 'contacts', [$contacts, 'index']);
 $router->add('POST', 'contacts', [$contacts, 'store']);
 $router->add('GET', 'inboxes', [$inboxes, 'index']);
 $router->add('POST', 'inboxes', [$inboxes, 'store']);
+
+$router->add('GET', 'users', [$users, 'index']);
+$router->add('POST', 'users', [$users, 'store']);
+$router->add('POST', 'users/{id}/toggle', [$users, 'toggle']);
+$router->add('GET', 'settings', [$settings, 'index']);
+$router->add('POST', 'settings', [$settings, 'save']);
 
 $router->add('GET', 'integrations', [$integrations, 'index']);
 $router->add('POST', 'integrations', [$integrations, 'store']);

@@ -26,6 +26,8 @@
         <a href="<?= App::url('contacts') ?>" class="nav-link"><i class="bi bi-people me-2"></i>Contacts</a>
         <a href="<?= App::url('inboxes') ?>" class="nav-link"><i class="bi bi-inboxes me-2"></i>Inboxes</a>
         <a href="<?= App::url('integrations') ?>" class="nav-link"><i class="bi bi-plug me-2"></i>Integrations</a>
+        <a href="<?= App::url('users') ?>" class="nav-link"><i class="bi bi-person-gear me-2"></i>Users</a>
+        <a href="<?= App::url('settings') ?>" class="nav-link"><i class="bi bi-sliders me-2"></i>Settings</a>
     </nav>
     <div class="mt-auto pt-3 border-top border-secondary-subtle">
         <div class="small text-white-50 mb-2"><?= e($user['name']) ?> · <?= e($user['role_name']) ?></div>

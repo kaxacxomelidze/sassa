@@ -184,3 +184,10 @@ Use this mapping when filling `/integrations`:
   - Webhook URL: `https://your-domain.com/webhooks/email-parser`
 
 > Note: provider webhooks require a public HTTPS URL (use ngrok/cloudflare tunnel for local testing).
+
+
+## Management modules
+New admin management pages:
+- `/users` (Admin only): create users, assign roles, activate/deactivate accounts
+- `/settings` (Admin only): update system name, logo path, timezone, language, and theme
+- `/integrations` (Admin/Supervisor): manage API credentials/webhooks and run readiness tests
