@@ -6,6 +6,7 @@ return [
         'timezone' => 'UTC',
         'default_language' => 'en',
         'session_name' => 'sassa_session',
+        'key' => 'base64:CHANGE_ME_WITH_RANDOM_32BYTE_BASE64',
     ],
     'db' => [
         'host' => '127.0.0.1',

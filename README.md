@@ -191,3 +191,50 @@ New admin management pages:
 - `/users` (Admin only): create users, assign roles, activate/deactivate accounts
 - `/settings` (Admin only): update system name, logo path, timezone, language, and theme
 - `/integrations` (Admin/Supervisor): manage API credentials/webhooks and run readiness tests
+
+
+## Production readiness checklist (real server)
+Before connecting real provider APIs:
+
+1. **Set app key for encryption** in `config/config.php`:
+   - `app.key = base64:<32-byte-random-base64>`
+2. Force HTTPS on your domain and use HTTPS webhook URLs.
+3. Restrict DB user permissions (no root in production).
+4. Set firewall rules so only required ports are open.
+5. Run `/health` for uptime monitoring.
+6. Backup DB daily and rotate API tokens regularly.
+
+### Generate a strong app key
+Run:
+```bash
+php -r "echo 'base64:' . base64_encode(random_bytes(32)) . PHP_EOL;"
+```
+Paste into:
+```php
+'app' => [
+  // ...
+  'key' => 'base64:YOUR_GENERATED_KEY'
+]
+```
+
+## Webhook verification support
+For Meta channels (WhatsApp/Messenger/Instagram), the app now supports GET verification challenge:
+- `GET /webhooks/whatsapp`
+- `GET /webhooks/messenger`
+- `GET /webhooks/instagram`
+
+The verify token is matched against Integration `webhook_verify_token`.
+
+## Security note for integration secrets
+`api_secret` and `access_token` are encrypted at rest before storing in database.
+If you change `app.key`, previously stored secrets cannot be decrypted, so rotate/re-save credentials after key change.
+
+
+## Facebook/Messenger app review URLs
+Use these public URLs in Meta App Dashboard:
+- Privacy Policy URL: `https://your-domain.com/privacy-policy`
+- Terms of Service URL: `https://your-domain.com/terms-of-service`
+
+For local testing only:
+- `http://localhost/sassa/privacy-policy`
+- `http://localhost/sassa/terms-of-service`

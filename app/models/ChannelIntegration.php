@@ -4,14 +4,36 @@ class ChannelIntegration extends BaseModel
     public function all(): array
     {
         $sql = 'SELECT ci.*, i.name AS inbox_name FROM channel_integrations ci LEFT JOIN inboxes i ON i.id = ci.inbox_id ORDER BY ci.created_at DESC';
-        return $this->db->query($sql)->fetchAll();
+        $rows = $this->db->query($sql)->fetchAll();
+        foreach ($rows as &$row) {
+            $row['api_secret'] = decrypt_value($row['api_secret'] ?? '');
+            $row['access_token'] = decrypt_value($row['access_token'] ?? '');
+        }
+        return $rows;
     }
 
     public function find(int $id): ?array
     {
         $stmt = $this->db->prepare('SELECT * FROM channel_integrations WHERE id = ? LIMIT 1');
         $stmt->execute([$id]);
-        return $stmt->fetch() ?: null;
+        $row = $stmt->fetch() ?: null;
+        if ($row) {
+            $row['api_secret'] = decrypt_value($row['api_secret'] ?? '');
+            $row['access_token'] = decrypt_value($row['access_token'] ?? '');
+        }
+        return $row;
+    }
+
+    public function findByChannel(string $channel): ?array
+    {
+        $stmt = $this->db->prepare('SELECT * FROM channel_integrations WHERE channel_type=? AND is_active=1 ORDER BY id DESC LIMIT 1');
+        $stmt->execute([$channel]);
+        $row = $stmt->fetch() ?: null;
+        if ($row) {
+            $row['api_secret'] = decrypt_value($row['api_secret'] ?? '');
+            $row['access_token'] = decrypt_value($row['access_token'] ?? '');
+        }
+        return $row;
     }
 
     public function create(array $data): void
@@ -23,8 +45,8 @@ class ChannelIntegration extends BaseModel
             $data['inbox_id'] ?: null,
             $data['api_base_url'],
             $data['api_key'],
-            $data['api_secret'],
-            $data['access_token'],
+            encrypt_value($data['api_secret']),
+            encrypt_value($data['access_token']),
             $data['webhook_verify_token'],
             $data['webhook_url'],
             $data['is_active'],
@@ -52,8 +74,8 @@ class ChannelIntegration extends BaseModel
             $data['inbox_id'] ?: null,
             $data['api_base_url'],
             $data['api_key'],
-            $apiSecret,
-            $accessToken,
+            encrypt_value($apiSecret),
+            encrypt_value($accessToken),
             $data['webhook_verify_token'],
             $data['webhook_url'],
             $data['is_active'],

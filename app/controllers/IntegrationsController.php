@@ -148,6 +148,28 @@ class IntegrationsController
             }
         }
 
-        return ['ok', 'Configuration looks valid and ready for provider webhook setup.'];
+        $apiBase = trim((string)($integration['api_base_url'] ?? ''));
+        if ($apiBase !== '' && filter_var($apiBase, FILTER_VALIDATE_URL)) {
+            $ch = curl_init($apiBase);
+            curl_setopt_array($ch, [
+                CURLOPT_NOBODY => true,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_TIMEOUT => 5,
+            ]);
+            curl_exec($ch);
+            $err = curl_error($ch);
+            $code = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close($ch);
+            if ($err !== '') {
+                return ['error', 'API base URL unreachable: ' . $err];
+            }
+            if ($code >= 500) {
+                return ['error', 'API base URL returned server error: HTTP ' . $code];
+            }
+        }
+
+        return ['ok', 'Configuration looks valid and endpoint checks passed.'];
     }
+
 }

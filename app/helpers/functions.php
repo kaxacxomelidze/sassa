@@ -39,7 +39,6 @@ function flash(string $key, ?string $value = null): ?string
     return $msg;
 }
 
-
 function mask_secret(?string $value): string
 {
     $value = (string) $value;
@@ -48,4 +47,47 @@ function mask_secret(?string $value): string
         return $len ? str_repeat('*', $len) : '-';
     }
     return substr($value, 0, 2) . str_repeat('*', max(2, $len - 4)) . substr($value, -2);
+}
+
+function app_key(): string
+{
+    $key = (string)(App::$config['app']['key'] ?? '');
+    if ($key === '') {
+        return hash('sha256', 'sassa-default-insecure-key-change-me', true);
+    }
+    if (str_starts_with($key, 'base64:')) {
+        return base64_decode(substr($key, 7), true) ?: hash('sha256', $key, true);
+    }
+    return hash('sha256', $key, true);
+}
+
+function encrypt_value(?string $plain): ?string
+{
+    if ($plain === null || $plain === '') {
+        return $plain;
+    }
+    $iv = random_bytes(16);
+    $enc = openssl_encrypt($plain, 'AES-256-CBC', app_key(), OPENSSL_RAW_DATA, $iv);
+    if ($enc === false) {
+        return $plain;
+    }
+    return 'enc:' . base64_encode($iv . $enc);
+}
+
+function decrypt_value(?string $cipher): ?string
+{
+    if ($cipher === null || $cipher === '') {
+        return $cipher;
+    }
+    if (!str_starts_with($cipher, 'enc:')) {
+        return $cipher;
+    }
+    $raw = base64_decode(substr($cipher, 4), true);
+    if ($raw === false || strlen($raw) < 17) {
+        return '';
+    }
+    $iv = substr($raw, 0, 16);
+    $payload = substr($raw, 16);
+    $dec = openssl_decrypt($payload, 'AES-256-CBC', app_key(), OPENSSL_RAW_DATA, $iv);
+    return $dec === false ? '' : $dec;
 }
